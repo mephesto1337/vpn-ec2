@@ -1,1 +1,7 @@
 /venv/
+/galaxy_cache/
+/collections/
+/tmp/
+/pki/
+/.vim/
+ansible.log
