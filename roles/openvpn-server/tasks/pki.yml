@@ -4,6 +4,7 @@
     argv:
       - "easyrsa"
       - "--batch"
+      - "--pki-dir={{ pki.path }}"
       - "init-pki"
       - "nopass"
     creates: "{{ pki.path }}/reqs"
