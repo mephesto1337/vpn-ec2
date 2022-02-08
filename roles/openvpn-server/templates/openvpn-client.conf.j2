@@ -42,9 +42,15 @@ mute-replay-warnings
 # SSL/TLS parms. See the server config file for more description.  It's best to
 # use a separate .crt/.key file pair for each client.  A single ca file can be
 # used for all clients.
-ca {{ pki.path }}/ca.crt
-cert {{ pki.path }}/issued/{{ openvpn.client.cn }}.crt
-key {{ pki.path }}/private/{{ openvpn.client.cn }}.key
+<ca>
+{{ lookup('file', ca_file) }}
+</ca>
+<cert>
+{{ lookup('file', cert_file) }}
+</cert>
+<key>
+{{ lookup('file', key_file) }}
+</key>
 
 # Verify server certificate by checking that the certicate has the correct key
 # usage set. This is an important precaution to protect against a potential

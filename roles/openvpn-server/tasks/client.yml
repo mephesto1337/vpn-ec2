@@ -33,3 +33,7 @@
     mode: '0644'
   delegate_to: localhost
   become: false
+  vars:
+    ca_file: "{{ pki.path }}/ca.crt"
+    cert_file: "{{ pki.path }}/issued/{{ openvpn.client.cn }}.crt"
+    key_file: "{{ pki.path }}/private/{{ openvpn.client.cn }}.key"
