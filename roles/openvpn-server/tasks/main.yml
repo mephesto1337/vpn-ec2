@@ -3,6 +3,9 @@
 - name: "Ensure PKI is initialized"
   ansible.builtin.include_tasks: "pki.yml"
 
+- name: "Generate client configuration file"
+  ansible.builtin.include_tasks: "client.yml"
+
 - name: "Install OpenVPN"
   ansible.builtin.package:
     name:

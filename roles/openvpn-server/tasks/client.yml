@@ -1,0 +1,35 @@
+- name: "Creates the CSR from EasyRSA PKI"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "--pki-dir={{ pki.path }}"
+      - "--req-cn={{ openvpn.client.cn }}"
+      - "gen-req"
+      - "{{ openvpn.client.cn }}"
+      - "nopass"
+    creates: "{{ pki.path }}/reqs/{{ openvpn.client.cn }}.req"
+  delegate_to: localhost
+  become: false
+
+- name: "Sign the CSR"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "--pki-dir={{ pki.path }}"
+      - "--subject-alt-name=email:{{ openvpn.client.cn }}"
+      - "sign-req"
+      - "client"
+      - "{{ openvpn.client.cn }}"
+    creates: "{{ pki.path }}/issued/{{ openvpn.client.cn }}.crt"
+  delegate_to: localhost
+  become: false
+
+- name: "Configure OpenVPN server"
+  ansible.builtin.template:
+    dest: ../clients/{{ inventory_hostname }}.conf
+    src: openvpn-client.conf.j2
+    mode: '0644'
+  delegate_to: localhost
+  become: false

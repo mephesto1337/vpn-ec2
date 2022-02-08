@@ -1,7 +1,7 @@
 ---
 # vars file for openvpn-server
 openvpn:
-  listen_port: 1194
+  listen_port: 54463
   proto: udp
 
   ca: /etc/ssl/certs/ca-openvpn.crt
@@ -11,6 +11,9 @@ openvpn:
   ta: /etc/openvpn/server/ta.key
 
   max_clients: 100
+
+  client:
+    cn: nobody@localhost
 
 pki:
   path: /home/thomas/dev/vpn-ec2/pki
