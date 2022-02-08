@@ -11,6 +11,18 @@
   delegate_to: localhost
   become: false
 
+- name: "Build the CA"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "--pki-dir={{ pki.path }}"
+      - "build-ca"
+      - "nopass"
+    creates: "{{ pki.path }}/ca.crt"
+  delegate_to: localhost
+  become: false
+
 - name: "Copy configuration file"
   copy:
     src: /etc/easy-rsa/openssl-easyrsa.cnf
