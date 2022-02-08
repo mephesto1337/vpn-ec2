@@ -58,5 +58,5 @@ $ ansible-playbook -i inventory -l localhost playbooks/setup-vpn-client.yml
 
 ## Enjoy
 ```bash
-$ sudo openvpn client.conf
+$ sudo openvpn clients/ec2-3-83-190-235.compute-1.amazonaws.com.conf
 ```

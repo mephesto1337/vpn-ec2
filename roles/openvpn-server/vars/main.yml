@@ -10,6 +10,7 @@ openvpn:
   dh: /etc/openvpn/server/dh.pem
   ta: /etc/openvpn/server/ta.key
 
+  subnet: 10.8.0.0/24
   max_clients: 100
 
   client:

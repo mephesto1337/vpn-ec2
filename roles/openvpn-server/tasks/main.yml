@@ -6,6 +6,9 @@
 - name: "Generate client configuration file"
   ansible.builtin.include_tasks: "client.yml"
 
+- name: "Enable IP forwarding"
+  ansible.builtin.include_tasks: "forward.yml"
+
 - name: "Install OpenVPN"
   ansible.builtin.package:
     name:

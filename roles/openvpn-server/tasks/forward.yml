@@ -1,0 +1,20 @@
+- name: "Enable IPv4 forwarding"
+  ansible.builtin.sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/foward.conf
+    reload: true
+  with_items:
+    - name: net.ipv4.ip_forward
+      value: 1
+    - name: net.ipv6.conf.all.forwarding
+      value: 1
+
+- name: "Enable NAT for IPv4"
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    source: "{{ openvpn.subnet }}"
+    out_interface: eth0
+    jump: MASQUERADE
