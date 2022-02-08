@@ -31,7 +31,7 @@ Instance i-0ef25a9959d0177cc created with DNS ec2-3-83-190-235.compute-1.amazona
 
 ## Check our AWS inventory
 ```bash
-$ ansible-inventory -i aws_ec2.yml --graph
+$ ansible-inventory --graph
 @all:
   |--@aws_ec2:
   |  |--ec2-3-83-190-235.compute-1.amazonaws.com
@@ -48,15 +48,11 @@ $ ansible-inventory -i aws_ec2.yml --graph
 
 ## Setup the VM
 ```bash
-$ ansible-playbook -i aws_ec2.yml -l ec2-3-83-190-235.compute-1.amazonaws.com playbooks/setup-vpn-server.yml
-```
-
-## Setup your client
-```bash
-$ ansible-playbook -i inventory -l localhost playbooks/setup-vpn-client.yml
+$ ansible-playbook -l ec2-3-83-190-235.compute-1.amazonaws.com playbooks/setup-vpn-server.yml
 ```
 
 ## Enjoy
+The configuration file for the client is in the clients/ sub-directory
 ```bash
 $ sudo openvpn clients/ec2-3-83-190-235.compute-1.amazonaws.com.conf
 ```
