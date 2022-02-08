@@ -125,5 +125,6 @@
     mode: '0600'
   vars:
     server_ipv6: "{{ ansible_facts.all_ipv6_addresses | ansible.netcommon.ipaddr('public') | first | ansible.netcommon.ipsubnet(64) }}"
+
   notify:
     - restart openvpn

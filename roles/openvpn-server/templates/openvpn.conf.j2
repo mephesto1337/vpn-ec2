@@ -37,7 +37,9 @@ topology subnet
 # 10.8.0.1. Comment this line out if you are ethernet bridging. See the man
 # page for more info.
 server 10.8.0.0 255.255.255.0
+{% if server_ipv6 %}
 server-ipv6 {{ server_ipv6 }}
+{% endif %}
 
 # Maintain a record of client <-> virtual IP address associations in this file.
 # If OpenVPN goes down or is restarted, reconnecting clients can be assigned
@@ -52,7 +54,9 @@ ifconfig-pool-persist ipp.txt
 ;push "route 192.168.20.0 255.255.255.0"
 
 # Redirect Internet IPv6
+{% if server_ipv6 %}
 push "route-ipv6 2000::/3"
+{% endif %}
 
 # If enabled, this directive will configure all clients to redirect their
 # default network gateway through the VPN, causing all IP traffic such as web
