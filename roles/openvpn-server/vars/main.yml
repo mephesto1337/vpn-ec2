@@ -11,3 +11,9 @@ openvpn:
   ta: /etc/openvpn/server/ta.key
 
   max_clients: 100
+
+pki:
+  path: /home/thomas/dev/vpn-ec2/pki
+  key_size: 4096
+  cert_expire: 180
+  digest: sha256

@@ -1,0 +1,37 @@
+---
+- name: "Initialize the EasyRSA PKI"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "init-pki"
+      - "nopass"
+    creates: "{{ pki.path }}/reqs"
+  delegate_to: localhost
+  become: false
+
+- name: "Copy configuration file"
+  copy:
+    src: /etc/easy-rsa/openssl-easyrsa.cnf
+    dest: "{{ pki.path }}/openssl-easyrsa.cnf"
+    remote_src: false
+    mode: '0644'
+  delegate_to: localhost
+  become: false
+
+- name: "Configure variables for EasyRSA"
+  template:
+    dest: "{{ pki.path }}/vars"
+    src: vars.j2
+    mode: '0644'
+  delegate_to: localhost
+  become: false
+
+- name: "Copy all cert types"
+  copy:
+    src: /etc/easy-rsa/x509-types
+    dest: "{{ pki.path }}/"
+    remote_src: false
+    mode: preserve
+  delegate_to: localhost
+  become: false

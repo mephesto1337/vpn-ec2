@@ -1,0 +1,6 @@
+---
+- name: Install OpenVPN server
+  hosts: all
+  roles:
+    - base-commands
+    - openvpn-server
