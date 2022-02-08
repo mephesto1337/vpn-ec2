@@ -38,7 +38,7 @@ topology subnet
 # page for more info.
 server {{ openvpn.subnet | ansible.netcommon.ipaddr('network') }} {{ openvpn.subnet | ansible.netcommon.ipaddr('netmask') }}
 {% if server_ipv6 %}
-server-ipv6 {{ server_ipv6 }}
+server-ipv6 {{ server_ipv6 | regex_replace('::/', ':beef::/') }}
 {% endif %}
 
 # Maintain a record of client <-> virtual IP address associations in this file.
@@ -56,6 +56,8 @@ ifconfig-pool-persist ipp.txt
 # Redirect Internet IPv6
 {% if server_ipv6 %}
 push "route-ipv6 2000::/3"
+script-security 2
+learn-address /etc/openvpn/learn-address
 {% endif %}
 
 # If enabled, this directive will configure all clients to redirect their
@@ -98,8 +100,10 @@ max-clients {{ openvpn.max_clients }}
 
 # It's a good idea to reduce the OpenVPN daemon's privileges after
 # initialization.
+{% if not server_ipv6 %}
 user nobody
 group nobody
+{% endif %}
 
 # The persist options will try to avoid accessing certain resources on restart
 # that may no longer be accessible because of the privilege downgrade.

@@ -122,6 +122,15 @@
   notify:
     - restart openvpn
 
+- name: "Add script for NDP proxy"
+  copy:
+    src: learn-address
+    dest: /etc/openvpn/learn-address
+    owner: root
+    group: root
+    remote_src: false
+    mode: '0755'
+
 - name: "Configure OpenVPN server"
   ansible.builtin.template:
     dest: /etc/openvpn/server/server.conf
@@ -130,7 +139,7 @@
     group: root
     mode: '0600'
   vars:
-    server_ipv6: "{{ ansible_facts.all_ipv6_addresses | ansible.netcommon.ipaddr('public') | first | ansible.netcommon.ipsubnet(64) }}"
+    server_ipv6: "{{ ansible_facts.all_ipv6_addresses | ansible.netcommon.ipaddr('public') | first | ansible.netcommon.ipsubnet(80) }}"
 
   notify:
     - restart openvpn
