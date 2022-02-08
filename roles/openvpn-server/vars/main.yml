@@ -1,0 +1,13 @@
+---
+# vars file for openvpn-server
+openvpn:
+  listen_port: 1194
+  proto: udp
+
+  ca: /etc/ssl/certs/ca-openvpn.crt
+  cert: /etc/ssl/certs/openvpn.crt
+  key: /etc/ssl/private/openvpn.key
+  dh: /etc/openvpn/server/dh.pem
+  ta: /etc/openvpn/server/ta.key
+
+  max_clients: 100

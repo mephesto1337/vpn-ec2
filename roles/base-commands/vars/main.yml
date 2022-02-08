@@ -1,0 +1,6 @@
+---
+# vars file for base-commands
+packages:
+  - iproute
+  - python3
+  - python3-netaddr

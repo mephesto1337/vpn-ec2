@@ -1,0 +1,106 @@
+---
+# tasks file for openvpn-server
+- name: "Install OpenVPN"
+  ansible.builtin.package:
+    name:
+      - openvpn
+      - easy-rsa
+    state: present
+
+- name: "Ensure {{ openvpn.key | dirname }} exists"
+  ansible.builtin.file:
+    path: "{{ openvpn.key | dirname }}"
+    state: directory
+    mode: '0711'
+    owner: root
+    group: root
+
+- name: "Generate DH parameters"
+  community.crypto.openssl_dhparam:
+    path: pki/dh.pem
+    size: 4096
+  delegate_to: localhost
+  become: false
+
+- name: "Generate TLS auth key"
+  ansible.builtin.command: "openvpn --genkey secret pki/ta.key"
+  args:
+    creates: "pki/ta.key"
+  delegate_to: localhost
+  become: false
+
+- name: "Creates the CSR from EasyRSA PKI"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "--req-cn={{ inventory_hostname }}"
+      - "gen-req"
+      - "{{ inventory_hostname }}"
+      - "nopass"
+    creates: "pki/reqs/{{ inventory_hostname }}.req"
+  delegate_to: localhost
+  become: false
+
+- name: "Sign the CSR"
+  command:
+    argv:
+      - "easyrsa"
+      - "--batch"
+      - "--subject-alt-name=DNS:{{ inventory_hostname }},IP:{{ ansible_host }}"
+      - "sign-req"
+      - "server"
+      - "{{ inventory_hostname }}"
+    creates: "pki/issued/{{ inventory_hostname }}.crt"
+  delegate_to: localhost
+  become: false
+
+- name: "Import CA"
+  ansible.builtin.copy:
+    src: pki/ca.crt
+    dest: "{{ openvpn.ca }}"
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: "Import OpenVPN Certificate"
+  ansible.builtin.copy:
+    src: "pki/issued/{{ inventory_hostname }}.crt"
+    dest: "{{ openvpn.cert }}"
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: "Import OpenVPN Certificate key"
+  ansible.builtin.copy:
+    src: "pki/private/{{ inventory_hostname }}.key"
+    dest: "{{ openvpn.key }}"
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: "Import TLS auth key"
+  ansible.builtin.copy:
+    src: pki/ta.key
+    dest: "{{ openvpn.ta }}"
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: "Import DH parameters"
+  ansible.builtin.copy:
+    src: pki/dh.pem
+    dest: "{{ openvpn.dh }}"
+    mode: '0600'
+    owner: root
+    group: root
+
+- name: "Configure OpenVPN server"
+  ansible.builtin.template:
+    dest: /etc/openvpn/server/server.conf
+    src: openvpn.conf.j2
+    owner: root
+    group: root
+    mode: '0600'
+  vars:
+    server_ipv6: "{{ ansible_facts.ansible_default_ipv6.address | ansible.netcommon.ipsubnet(64) }}"
