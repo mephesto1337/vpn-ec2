@@ -1,5 +1,5 @@
 ---
 collections:
-- name: community.crypto
-- name: amazon.aws
-- name: ansible.netcommon
+  - name: community.crypto
+  - name: amazon.aws
+  - name: ansible.netcommon
