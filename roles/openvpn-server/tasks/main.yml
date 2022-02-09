@@ -1,5 +1,15 @@
 ---
 # tasks file for openvpn-server
+- name: "Set OpenVPN IPv6 subnet"
+  ansible.builtin.set_fact:
+    openvpn_ipv6: "{{ ansible_facts.default_ipv6.scope == 'global' }}"
+    openvpn_subnet6: >-
+      {{
+      ansible_facts.default_ipv6.address |
+      ansible.netcommon.ipsubnet(80) |
+      regex_replace('::/', ':beef::/')
+      }}
+
 - name: "Ensure PKI is initialized"
   ansible.builtin.include_tasks: "pki.yml"
 
@@ -138,8 +148,5 @@
     owner: root
     group: root
     mode: '0600'
-  vars:
-    server_ipv6: "{{ ansible_facts.all_ipv6_addresses | ansible.netcommon.ipaddr('public') | first | ansible.netcommon.ipsubnet(80) }}"
-
   notify:
     - restart openvpn

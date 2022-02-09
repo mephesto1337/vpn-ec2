@@ -18,3 +18,13 @@
     source: "{{ openvpn.subnet }}"
     out_interface: eth0
     jump: MASQUERADE
+
+- name: "Enable NAT for IPv6 :-("
+  ansible.builtin.iptables:
+    ip_version: ipv6
+    table: nat
+    chain: POSTROUTING
+    source: "{{ openvpn_subnet6 }}"
+    out_interface: eth0
+    jump: MASQUERADE
+  when: "openvpn_ipv6 > 0"
